@@ -36,7 +36,7 @@ class LivewirePageGroupServiceProvider extends PackageServiceProvider
         app(Router::class)->aliasMiddleware('pagegroup', SetUpPageGroup::class);
     }
 
-    public function packageBooted()
+    public function packageBooted(): void
     {
         Livewire::addPersistentMiddleware([
             SetUpPageGroup::class,
