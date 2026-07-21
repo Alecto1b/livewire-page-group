@@ -2,11 +2,13 @@
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
 use Rahmanramsi\LivewirePageGroup\Http\Middleware\SetUpPageGroup;
 use Rahmanramsi\LivewirePageGroup\LivewirePageGroupManager;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\HomePage;
+use Rahmanramsi\LivewirePageGroup\Support\LivewireCompatibility;
 use Rahmanramsi\LivewirePageGroup\Tests\Fixtures\DiscoveredPages\HiddenPage;
 use Rahmanramsi\LivewirePageGroup\Tests\Fixtures\DiscoveredPages\ReportsPage;
 use Rahmanramsi\LivewirePageGroup\Tests\Fixtures\Pages\ProfilePage;
@@ -94,6 +96,23 @@ it('renders custom and discovered Livewire pages', function () {
         ->assertOk()
         ->assertSee('Reports page rendered.')
         ->assertSee('<title>Reports Page</title>', false);
+});
+
+it('keeps component aliases stable and processes Livewire updates', function () {
+    $compatibility = app(LivewireCompatibility::class);
+    $componentName = $compatibility->componentName(ProfilePage::class);
+
+    expect($componentName)
+        ->toBe('rahmanramsi.livewire-page-group.tests.fixtures.pages.profile-page');
+
+    $component = Livewire::test($componentName)
+        ->assertSet('count', 0)
+        ->assertSee('Count: 0')
+        ->call('increment')
+        ->assertSet('count', 1)
+        ->assertSee('Count: 1');
+
+    expect($component->instance()->getName())->toBe($componentName);
 });
 
 it('returns a clear not found response for an unknown middleware group', function () {

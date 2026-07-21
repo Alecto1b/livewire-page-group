@@ -9,9 +9,9 @@ This package groups class-based, full-page Livewire components behind a shared d
 
 - PHP `^8.1`
 - Laravel 10, 11, 12, or 13
-- Livewire `^3.8`
+- Livewire `^3.8` or `^4.1`
 
-Livewire is installed as a runtime dependency. Livewire 4 is not currently supported; this package intentionally continues to use Livewire 3 full-page component routing.
+Livewire is installed as a runtime dependency. Composer selects a compatible release from `^3.8 || ^4.1`, so applications constrained to Livewire 3 can stay on that line while applications such as Filament 5 projects can resolve Livewire 4.
 
 ## Installation
 
@@ -104,7 +104,9 @@ class ListUsers extends Page
 
 Explicit pages are registered with `pages([...])`. `discoverPages($directory, $namespace)` discovers non-abstract `Page` subclasses from an autoloadable namespace. Set `protected static bool $isDiscovered = false` on a page to exclude it from discovery.
 
-The package keeps the Livewire 3 routing form `Route::get($uri, ComponentClass::class)`. Do not use Livewire 4-only APIs such as `Route::livewire()` or `Livewire::addComponent()` with this release line.
+The package uses `Route::get($uri, ComponentClass::class)` for its class-based full-page components. This form works on both supported Livewire lines. Livewire-specific component registration is isolated behind a compatibility layer so component aliases remain stable across Livewire 3 and 4.
+
+Single-file and multi-file Livewire 4 components are not discovered as page-group pages. Page-group pages remain class-based subclasses of `Rahmanramsi\LivewirePageGroup\Pages\Page`.
 
 ## Page Generator
 
